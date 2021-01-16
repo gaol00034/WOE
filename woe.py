@@ -267,9 +267,11 @@ class WoeFeatureProcess(object):
 
     # 基于决策树分裂思想寻找最优切分点
     def choose_best_split(self, dataset, var):
+        #不同变量取值小于50，默认为切分点
         if dataset[var].unique().__len__() <= 50:
             split_value_list = dataset[var].unique()
         else:
+            #设置100个切分点，排序
             split_value_list = np.unique(np.percentile(dataset[var], range(100)))
         split_value_list = sorted([round(x, 4) for x in split_value_list])
 
@@ -287,7 +289,7 @@ class WoeFeatureProcess(object):
             else:
                 woe_left, iv_left = self.calculate_woe_iv(dataset_left)
                 woe_right, iv_right = self.calculate_woe_iv(dataset_right)
-
+                #确认最有切分点
                 if iv_left + iv_right > best_split_iv and iv_left >= self.min_iv and iv_right >= self.min_iv:
                     best_split_value = split_value
                     best_split_iv = iv_left + iv_right
